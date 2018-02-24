@@ -1,37 +1,54 @@
+# frozen_string_literal: true
+
 require 'gif_client'
 
-class Bowling
-  def initialize
-    @rolls = []
+# Frame ...
+class Frame
+  attr_reader :rolls, :index
+
+  def initialize(index, first_roll)
+    @index = index
+    @rolls = [first_roll]
   end
 
-  def roll(pin_count)
+  def add_second_roll(pin_count)
     @rolls << pin_count
-    return nil
+  end
+
+  def ended?
+    @rolls.size == 2 || strike?
   end
 
   def score
-    roll_index = 0
-    result = 0
+    @rolls.sum
+  end
 
-    10.times do
-      if strike?(roll_index)
-        result += 10 + strike_bonus(roll_index)
-        roll_index += 1
-        next
-      end
+  def strike?
+    @rolls.first == 10
+  end
 
-      if spare?(roll_index)
-        result += 10 + spare_bonus(roll_index)
-        roll_index += 2
-        next
-      end
+  def spare?
+    score == 10 && !strike?
+  end
+end
 
-      result += open_frame_score(roll_index)
-      roll_index += 2
+# Bowling ...
+class Bowling
+  def initialize
+    @frames = []
+  end
+
+  def roll(pin_count)
+    if @frames.empty? || @frames.last.ended?
+      @frames << Frame.new(@frames.size, pin_count)
+    else
+      @frames.last.add_second_roll(pin_count)
     end
+    nil
+  end
 
-    result
+  def score
+    frame_scores + spare_bonuses + strike_bonuses
   end
 
   def celebrate(gif_client = GifClient.new)
@@ -40,27 +57,47 @@ class Bowling
 
   private
 
-  def strike?(roll_index)
-    @rolls[roll_index] == 10
+  def frame_scores
+    game_frames.sum(&:score)
   end
 
-  def spare?(roll_index)
-    @rolls[roll_index] + @rolls[roll_index + 1] == 10
+  def spare_bonuses
+    spare_frames.sum { |frame| spare_bonus_for_frame(frame) }
   end
 
-  def open_frame_score(roll_index)
-    @rolls[roll_index] + @rolls[roll_index + 1]
+  def strike_bonuses
+    strike_frames.sum { |frame| strike_bonus_for_frame(frame) }
   end
 
-  def spare_bonus(roll_index)
-    @rolls[roll_index + 2]
+  def spare_frames
+    game_frames.select(&:spare?)
   end
 
-  def strike_bonus(roll_index)
-    @rolls[roll_index + 1] + @rolls[roll_index + 2]
+  def strike_frames
+    game_frames.select(&:strike?)
   end
 
-  def gif_from_giphy()
+  def spare_bonus_for_frame(frame)
+    next_frame(frame).rolls.first
+  end
 
+  def strike_bonus_for_frame(frame)
+    if next_frame(frame).strike?
+      return 10 + next_next_frame(frame).rolls.first
+    end
+
+    next_frame(frame).score
+  end
+
+  def game_frames
+    @frames.take(10)
+  end
+
+  def next_frame(frame)
+    @frames[frame.index + 1]
+  end
+
+  def next_next_frame(frame)
+    @frames[frame.index + 2]
   end
 end
