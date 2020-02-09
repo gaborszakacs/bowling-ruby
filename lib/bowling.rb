@@ -10,7 +10,7 @@ class Bowling
 
   def roll(pin_count)
     if pin_count < 0
-      raise('Even I cannot roll minus pins, you loser!')
+      raise("Even I cannot roll minus pins, you loser!")
     end
 
     if pin_count > 10
