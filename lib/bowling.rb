@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'gif_client'
+require "gif_client"
 
 # Bowling ...
 class Bowling
