@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
-require 'bowling'
+require 'bowling_game'
 
-RSpec.describe Bowling do
+RSpec.describe BowlingGame do
   describe '#score' do
     test_cases = [
       {
         name: 'Gutter game',
         rolls: [
+          0, 0,
           0, 0,
           0, 0,
         ],
@@ -17,7 +18,7 @@ RSpec.describe Bowling do
 
     test_cases.each do |tc|
       it "returns #{tc[:score]} for #{tc[:name]}" do
-        game = Bowling.new
+        game = BowlingGame.new
         tc[:rolls].each { |roll| game.roll roll }
 
         expect(game.score).to eq tc[:score]

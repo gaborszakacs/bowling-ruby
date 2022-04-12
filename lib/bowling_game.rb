@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-# Bowling is a great game
-class Bowling
+class BowlingGame
   def roll(pin_count)
-    # TODO
+    # nothing here yet
   end
 
   def score
