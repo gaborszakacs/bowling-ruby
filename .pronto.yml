@@ -1,3 +1,4 @@
+# test push
 rubocop:
   # Map of RuboCop severity level to Pronto severity level
   # severities:
