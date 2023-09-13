@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
 class BowlingGame
+  def initialize
+    @rolls = []
+  end
+
   def roll(pin_count)
-    # nothing here yet
+    @rolls << pin_count
   end
 
   def score
-    0
+    @rolls.sum
   end
 end

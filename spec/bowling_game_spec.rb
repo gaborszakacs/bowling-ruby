@@ -6,13 +6,24 @@ RSpec.describe BowlingGame do
   describe '#score' do
     test_cases = [
       {
-        name: 'Gutter game',
+        name: 'Simple game',
         rolls: [
-          0, 0,
-          0, 0,
-          0, 0,
+          1, 2,
+          3, 4,
+          1, 3,
         ],
-        score: 0
+        score: 3 + 7 + 4
+      },
+
+      # TODO: Implement this
+      {
+        name: 'Spare game',
+        rolls: [
+          1, 2,
+          1, 9,
+          1, 2,
+        ],
+        score: 3 + 10 + 1 + 3
       },
     ]
 
